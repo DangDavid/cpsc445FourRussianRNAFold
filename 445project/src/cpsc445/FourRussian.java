@@ -103,7 +103,7 @@ public class FourRussian extends AbstractAlg {
 
     private static void fillRTable(int i, int g, int[] bv) {
         // Set the indices of the r table to the index of the max k
-
+        // TODO Sophia last 3 lines
     }
 
     private static int[] decodeBinaryV(int[] bv) {
