@@ -73,7 +73,7 @@ public class FourRussian extends AbstractAlg {
                 }
                 if (i % q == 0) { // IE i is the last row in the r group
                     //  , Compute vg for group g and store it
-                    setLittleVg(i / q, q);
+                    setLittleVg(score, i / q, q, j);
                 }
 
 
@@ -136,13 +136,34 @@ public class FourRussian extends AbstractAlg {
 
     }
 
-    private static void setLittleVg(int g, int q) {
+    private static void setLittleVg(int[][] s, int g, int q, int j) {
 
         // the int array should be based on score
         // watch out for out of bounds
-        // TODO   David H Given S int[][] int g int q int j
-        vgHash.put(g, new int[q - 1]);
+    	int[] v = encode(s, g, q, j);
+        vgHash.put(g, v);
 
+    }
+    
+    private static int[] encode(int[][] s, int g, int q, int j) {
+    	
+    	int[] v = new int[q-1];
+    	int start = q*g;
+    	
+    	for (int i = 0; i < q-1; i++) {
+    	
+    		int val = 0;
+    		if (start+i+1 < s[0].length) {
+    			val = s[start+i][j]-s[start+i+1][j];
+    		}
+    		
+    		if (val > 0) {
+    			System.out.println("ERROR negative value in v");
+    		}
+    		
+    		v[q-2-i] = val;
+    	}
+    	return v;
     }
 
     private static int getKFromRTable(int i, int g, int[] vg) {
