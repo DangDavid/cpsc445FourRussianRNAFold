@@ -11,7 +11,7 @@ import java.util.*;
 public class FourRussian extends AbstractAlg {
 
     final static List<VectorResult> binaryV = new ArrayList<VectorResult>();
-    final static HashMap<Integer, VectorResult> vgHash = new HashMap<Integer, VectorResult>();
+    static VectorResult[] vgArray;
     private static int[][][] rTable;
     //private static HashMap<VectorIndex, Integer> binDecTable;
 
@@ -19,12 +19,9 @@ public class FourRussian extends AbstractAlg {
 
         genBinaryVectors(binaryV, q);
         initRTable(sequence.getSize(), q);
+        vgArray = new VectorResult[(sequence.getSize() /q) + 1];
         ScoreMatrix result = new ScoreMatrix(sequence);
         int[][] score = result.getScoreMatrix();
-
-        // BUILD
-        //http://csiflabs.cs.ucdavis.edu/~gusfield/rnafoldlncs.pdf
-
 
         for (int j = 1; j < sequence.getSize(); j++) {
             // [Independent] Calculations below don't depend on the current column j
@@ -41,21 +38,7 @@ public class FourRussian extends AbstractAlg {
 
                 for (int g = (j - 1) / q; g >= (i + 1) / q; g--) {
 
-
-
-
-                    // TODO Figure out
-
-                    if (i >= g * q) {   //(i >k), k ∈ Rgroup g. {
-                        //{this statement runs at most once, for the smallest g}
-
-                        //find k*(i, g, j) by directly computing and comparing S(i, k-1)+S(k, j) where k ∈ L = {g * q to i}
-                        //System.out.println("j " + j + " i " + i + " g " + g + "  True");
-                        //|L| <q
-
-                        //if ((g + 1) * q - (i + 1) >= q) {
-                        //    System.out.println("Error not withing q " + ((g + 1) * q - (i + 1)));
-                        //}
+                    if (i >= g * q) {
                         for (int k = i + 1; k < (g + 1) * q && k < j; k++) {
                             score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
                         }
@@ -64,13 +47,9 @@ public class FourRussian extends AbstractAlg {
 
 
                     } else {
-                       // System.out.println("j " + j + " i " + i + " g " + g + "  false");
-                        //retrieve vg given g
+
                         VectorResult vg = getLittleVG(g);
-
-                        // carefull can be null in cases where the par
                         int k = getKFromRTable(i, g, vg.getNum());
-
                        // TODO uncomment when k is non 0
                        // score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
 
@@ -79,7 +58,6 @@ public class FourRussian extends AbstractAlg {
 
                 }
                 if (i % q == 0) { // IE i is the last row in the r group
-                    //  , Compute vg for group g and store it
                     setLittleVg(score, i / q, q, j);
                 }
 
@@ -87,12 +65,6 @@ public class FourRussian extends AbstractAlg {
             }
 
             if ((j+2) %q == 0){
-                //[Table] once Cgroup g = ⌊j/q⌋ is complete
-
-                // generate all binary vectors of q
-
-                //genBinaryVectors(binaryV, q);
-
                 for (VectorResult bv : binaryV){
                     int[] vPrime = decodeBinaryV(bv.getV());
                     for (int i = 0; i<j-1; i++) {
@@ -103,8 +75,6 @@ public class FourRussian extends AbstractAlg {
 
             }
         }
-
-        //printScore(score);
         return result;
 
     }
@@ -127,11 +97,6 @@ public class FourRussian extends AbstractAlg {
     private static void genBinaryVectors(List<VectorResult> binaryV, int q) {
          // can be done once and reuse vectors
         int total = (int) Math.pow(2,q-1) ;
-
-
-        //binDecTable = new HashMap<VectorIndex, Integer>(total*2);
-     //   System.out.println("Generating values from 0 to " + total);
-
         for (int i = 0; i < total; i++) {
             int[] vector = new int[q-1];
             int curr = i;
@@ -139,11 +104,7 @@ public class FourRussian extends AbstractAlg {
                 vector[b] = curr & 1;
                 curr= curr>>1;
             }
-
-           // System.out.println(Arrays.toString(vector));
             binaryV.add(new VectorResult(i,vector));
-           // binDecTable.put(new VectorIndex(vector), i);
-
         }
 
 
@@ -156,7 +117,7 @@ public class FourRussian extends AbstractAlg {
         // the int array should be based on score
         // watch out for out of bounds
         VectorResult v = encode(s, g, q, j);
-        vgHash.put(g, v);
+        vgArray[g] = v;
 
     }
     
@@ -174,6 +135,7 @@ public class FourRussian extends AbstractAlg {
     		}
     		
     		if (val > 0) {
+                // TODO figure out what we hsould do here
     			//System.out.println("ERROR negative value in v");
     		}
     		
@@ -187,33 +149,16 @@ public class FourRussian extends AbstractAlg {
     }
 
     private static int getKFromRTable(int i, int g, int v) {
-        // Makee sure vg is indexable
-        // ie change to binary representation
-       // System.out.println( "Get " + i +" "+ g);
-
         return rTable[i][g][v];
-      //  return rTableHash.get(new RTableIndex(i,g,vg));
     }
 
 
     private static void setKFromRTable(int i, int g, int vg, int k) {
-        // Makee sure vg is indexable
-        // ie change to binary representation
-
-
       rTable[i][g][vg] = k;
-       // System.out.println( "Put " + i +" "+ g);
-        //rTableHash.put(new RTableIndex(i, g, vg), k);
     }
 
     private static VectorResult getLittleVG(int g) {
-
-
-
-         // Done
-        //System.out.println("Do we no vg g" + g + " " + vgHash.containsKey(g));
-        return vgHash.get(g);
-
+        return vgArray[g];
     }
 
 

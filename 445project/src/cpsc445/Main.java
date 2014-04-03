@@ -18,7 +18,7 @@ public class Main {
         //FastaParser fp = new FastaParser();
         //List<Sequence> result = fp.parse("p04403.fasta");
 
-        Sequence test = new Sequence("test", testString+testString+testString+testString);
+        Sequence test = new Sequence("test", testString+testString+testString+testString+testString+testString);
 
         long start = 0;
 
