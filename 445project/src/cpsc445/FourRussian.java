@@ -1,9 +1,6 @@
 package cpsc445;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,11 +10,15 @@ import java.util.List;
  */
 public class FourRussian extends AbstractAlg {
 
-    final static List<int[]> binaryV = new ArrayList<int[]>();
-    final static HashMap<Integer, int[]> vgHash = new HashMap<Integer, int[]>();
+    final static List<VectorResult> binaryV = new ArrayList<VectorResult>();
+    final static HashMap<Integer, VectorResult> vgHash = new HashMap<Integer, VectorResult>();
+    private static int[][][] rTable;
+    //private static HashMap<VectorIndex, Integer> binDecTable;
 
     public static ScoreMatrix runFourRussian(Sequence sequence, int q) {
+
         genBinaryVectors(binaryV, q);
+        initRTable(sequence.getSize(), q);
         ScoreMatrix result = new ScoreMatrix(sequence);
         int[][] score = result.getScoreMatrix();
 
@@ -41,6 +42,8 @@ public class FourRussian extends AbstractAlg {
                 for (int g = (j - 1) / q; g >= (i + 1) / q; g--) {
 
 
+
+
                     // TODO Figure out
 
                     if (i >= g * q) {   //(i >k), k ∈ Rgroup g. {
@@ -57,15 +60,19 @@ public class FourRussian extends AbstractAlg {
                             score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
                         }
 
-                        // TODO TRUE case is done
+                        // TODO TRUE case is done might be missing the left cells within the cube
 
 
                     } else {
                        // System.out.println("j " + j + " i " + i + " g " + g + "  false");
                         //retrieve vg given g
-                        int[] vg = getLittleVG(g, q);
-                        int k = getKFromRTable(i, g, vg);
-                        score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
+                        VectorResult vg = getLittleVG(g);
+
+                        // carefull can be null in cases where the par
+                        int k = getKFromRTable(i, g, vg.getNum());
+
+                       // TODO uncomment when k is non 0
+                       // score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
 
                     }
 
@@ -86,10 +93,11 @@ public class FourRussian extends AbstractAlg {
 
                 //genBinaryVectors(binaryV, q);
 
-                for (int[] bv : binaryV){
-                    int[] vPrime = decodeBinaryV(bv);
+                for (VectorResult bv : binaryV){
+                    int[] vPrime = decodeBinaryV(bv.getV());
                     for (int i = 0; i<j-1; i++) {
-                        fillRTable(i,i/q,bv);
+                        // This should be g from column group
+                        fillRTable(i,((j+2)/q)-1, vPrime,bv.getNum());
                     }
                 }
 
@@ -101,9 +109,14 @@ public class FourRussian extends AbstractAlg {
 
     }
 
-    private static void fillRTable(int i, int g, int[] bv) {
+    private static void fillRTable(int i, int g, int[] vPrime, int vNum) {
         // Set the indices of the r table to the index of the max k
         // TODO Sophia last 3 lines
+
+        int k = 1;
+        setKFromRTable(i,g,vNum, k);
+
+
     }
 
     private static int[] decodeBinaryV(int[] bv) {
@@ -111,11 +124,12 @@ public class FourRussian extends AbstractAlg {
         return new int[0];
     }
 
-    private static void genBinaryVectors(List<int[]> binaryV, int q) {
+    private static void genBinaryVectors(List<VectorResult> binaryV, int q) {
          // can be done once and reuse vectors
-
-
         int total = (int) Math.pow(2,q-1) ;
+
+
+        //binDecTable = new HashMap<VectorIndex, Integer>(total*2);
      //   System.out.println("Generating values from 0 to " + total);
 
         for (int i = 0; i < total; i++) {
@@ -127,7 +141,8 @@ public class FourRussian extends AbstractAlg {
             }
 
            // System.out.println(Arrays.toString(vector));
-            binaryV.add(vector);
+            binaryV.add(new VectorResult(i,vector));
+           // binDecTable.put(new VectorIndex(vector), i);
 
         }
 
@@ -140,15 +155,16 @@ public class FourRussian extends AbstractAlg {
 
         // the int array should be based on score
         // watch out for out of bounds
-    	int[] v = encode(s, g, q, j);
+        VectorResult v = encode(s, g, q, j);
         vgHash.put(g, v);
 
     }
     
-    private static int[] encode(int[][] s, int g, int q, int j) {
+    private static VectorResult encode(int[][] s, int g, int q, int j) {
     	
     	int[] v = new int[q-1];
     	int start = q*g;
+        int num = 0 ;
     	
     	for (int i = 0; i < q-1; i++) {
     	
@@ -158,26 +174,53 @@ public class FourRussian extends AbstractAlg {
     		}
     		
     		if (val > 0) {
-    			System.out.println("ERROR negative value in v");
+    			//System.out.println("ERROR negative value in v");
     		}
     		
     		v[q-2-i] = val;
+            if (val == 1){
+                num += 1 <<  ( q-2-i);
+            }
+
     	}
-    	return v;
+    	return new VectorResult(num,v);
     }
 
-    private static int getKFromRTable(int i, int g, int[] vg) {
+    private static int getKFromRTable(int i, int g, int v) {
+        // Makee sure vg is indexable
+        // ie change to binary representation
+       // System.out.println( "Get " + i +" "+ g);
+
+        return rTable[i][g][v];
+      //  return rTableHash.get(new RTableIndex(i,g,vg));
+    }
+
+
+    private static void setKFromRTable(int i, int g, int vg, int k) {
         // Makee sure vg is indexable
         // ie change to binary representation
 
-        // TODO
-        return i + 1;
+
+      rTable[i][g][vg] = k;
+       // System.out.println( "Put " + i +" "+ g);
+        //rTableHash.put(new RTableIndex(i, g, vg), k);
     }
 
-    private static int[] getLittleVG(int g, int q) {
+    private static VectorResult getLittleVG(int g) {
+
+
 
          // Done
         //System.out.println("Do we no vg g" + g + " " + vgHash.containsKey(g));
         return vgHash.get(g);
+
     }
+
+
+
+    private static void initRTable(int seqLength, int q){
+        rTable = new int[seqLength][seqLength/q +1][(int) Math.pow(2,q-1)];
+    }
+
+
 }
