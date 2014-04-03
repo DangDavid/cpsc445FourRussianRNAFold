@@ -10,9 +10,9 @@ import java.util.HashMap;
  */
 public class AbstractAlg {
     public static final int NOT_FOUND_MATCH = 0;
-    protected static final HashMap<String,Integer> SCORE_TABLE;
-    static
-    {
+    protected static final HashMap<String, Integer> SCORE_TABLE;
+
+    static {
         SCORE_TABLE = new HashMap<String, Integer>();
         SCORE_TABLE.put("AU", 1);
         SCORE_TABLE.put("UA", 1);
@@ -26,12 +26,12 @@ public class AbstractAlg {
 
     protected static void printScore(int[][] score) {
         System.out.println();
-        for(int i = 0; i < score.length; i++){
+        for (int i = 0; i < score.length; i++) {
 
-            for(int j = 0; j < score.length; j++){
+            for (int j = 0; j < score.length; j++) {
 
 
-                System.out.print(score[i][j]+" ");
+                System.out.print(score[i][j] + " ");
 
 
             }
@@ -41,15 +41,15 @@ public class AbstractAlg {
     }
 
     protected static int compareMax(int newInt, int currMax) {
-        if (currMax < newInt){
+        if (currMax < newInt) {
             return newInt;
         }
         return currMax;
     }
 
-    protected static  int getScore(String s1, String s2) {
-        if (!SCORE_TABLE.containsKey(s1+s2)){
-             return NOT_FOUND_MATCH;
+    protected static int getScore(String s1, String s2) {
+        if (!SCORE_TABLE.containsKey(s1 + s2)) {
+            return NOT_FOUND_MATCH;
         }
 
         return SCORE_TABLE.get(s1 + s2);

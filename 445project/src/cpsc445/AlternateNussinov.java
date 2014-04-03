@@ -12,28 +12,25 @@ public class AlternateNussinov extends AbstractAlg {
         int[][] score = result.getScoreMatrix();
 
 
-
-
-        for( int j = 1 ; j < sequence.getSize(); j++ ) {
+        for (int j = 1; j < sequence.getSize(); j++) {
             // [Independent] Calculations below don't depend on the current column j
 
-            for (int i = 0; i < j ; i++ ){
+            for (int i = 0; i < j; i++) {
                 // do {rules a and b}
-                score[i][ j] = Math.max( score[i+1][j - 1]+ getScore(sequence.get(i), sequence.get(j)), score[i][j - 1]);
+                score[i][j] = Math.max(score[i + 1][j - 1] + getScore(sequence.get(i), sequence.get(j)), score[i][j - 1]);
             }
-
 
 
             //   [Dependent] Calculations below depend on the current column j
 
-            for (int i = j - 1; i>=0 ; i--){
+            for (int i = j - 1; i >= 0; i--) {
 
-                score[i][ j] = Math.max( score[i+1][j], score[i][j]);
+                score[i][j] = Math.max(score[i + 1][j], score[i][j]);
 
 
-                for (int k = j - 1; k >= i+1; k--){
+                for (int k = j - 1; k >= i + 1; k--) {
 
-                    score[i][ j] = Math.max(  score[i][j],  score[i][ k - 1]+score[k] [j]);
+                    score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
                 }
 
 

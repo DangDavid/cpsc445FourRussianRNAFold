@@ -16,12 +16,11 @@ import java.util.regex.Pattern;
  */
 public class FastaParser {
 
-    public FastaParser(){
+    public FastaParser() {
 
     }
 
     public List<Sequence> parse(String filename) {
-
 
 
         String pattern = "^>(.*)[|](.*)[|](\\S*)\\s(.+)";
@@ -38,11 +37,10 @@ public class FastaParser {
             Sequence currSeq = null;
 
 
-            while ( line != null) {
+            while (line != null) {
 
                 Matcher m = r.matcher(line);
                 if (m.find()) {
-
 
 
                     currSeq = new Sequence(m.group(3), "");
@@ -51,11 +49,9 @@ public class FastaParser {
                     continue;
                 }
 
-                if (currSeq!= null){
+                if (currSeq != null) {
                     currSeq.appendSeq(line.trim());
                 }
-
-
 
 
                 line = br.readLine();
@@ -64,7 +60,6 @@ public class FastaParser {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
 
 
         return result;

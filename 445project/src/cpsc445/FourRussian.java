@@ -13,13 +13,12 @@ public class FourRussian extends AbstractAlg {
     final static List<VectorResult> binaryV = new ArrayList<VectorResult>();
     static VectorResult[] vgArray;
     private static int[][][] rTable;
-    //private static HashMap<VectorIndex, Integer> binDecTable;
 
     public static ScoreMatrix runFourRussian(Sequence sequence, int q) {
 
-        genBinaryVectors(binaryV, q);
+        genBinaryVectors(q);
         initRTable(sequence.getSize(), q);
-        vgArray = new VectorResult[(sequence.getSize() /q) + 1];
+        vgArray = new VectorResult[(sequence.getSize() / q) + 1];
         ScoreMatrix result = new ScoreMatrix(sequence);
         int[][] score = result.getScoreMatrix();
 
@@ -50,8 +49,8 @@ public class FourRussian extends AbstractAlg {
 
                         VectorResult vg = getLittleVG(g);
                         int k = getKFromRTable(i, g, vg.getNum());
-                       // TODO uncomment when k is non 0
-                       // score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
+                        // TODO uncomment when k is non 0
+                        // score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
 
                     }
 
@@ -64,12 +63,12 @@ public class FourRussian extends AbstractAlg {
 
             }
 
-            if ((j+2) %q == 0){
-                for (VectorResult bv : binaryV){
+            if ((j + 2) % q == 0) {
+                for (VectorResult bv : binaryV) {
                     int[] vPrime = decodeBinaryV(bv.getV());
-                    for (int i = 0; i<j-1; i++) {
+                    for (int i = 0; i < j - 1; i++) {
                         // This should be g from column group
-                        fillRTable(i,((j+2)/q)-1, vPrime,bv.getNum());
+                        fillRTable(i, ((j + 2) / q) - 1, vPrime, bv.getNum());
                     }
                 }
 
@@ -84,7 +83,7 @@ public class FourRussian extends AbstractAlg {
         // TODO Sophia last 3 lines
 
         int k = 1;
-        setKFromRTable(i,g,vNum, k);
+        setKFromRTable(i, g, vNum, k);
 
 
     }
@@ -94,20 +93,18 @@ public class FourRussian extends AbstractAlg {
         return new int[0];
     }
 
-    private static void genBinaryVectors(List<VectorResult> binaryV, int q) {
-         // can be done once and reuse vectors
-        int total = (int) Math.pow(2,q-1) ;
+    private static void genBinaryVectors(int q) {
+        // can be done once and reuse vectors
+        int total = (int) Math.pow(2, q - 1);
         for (int i = 0; i < total; i++) {
-            int[] vector = new int[q-1];
+            int[] vector = new int[q - 1];
             int curr = i;
-            for (int b = 0; b < q-1; b++) {
+            for (int b = 0; b < q - 1; b++) {
                 vector[b] = curr & 1;
-                curr= curr>>1;
+                curr = curr >> 1;
             }
-            binaryV.add(new VectorResult(i,vector));
+            binaryV.add(new VectorResult(i, vector));
         }
-
-
 
 
     }
@@ -120,32 +117,32 @@ public class FourRussian extends AbstractAlg {
         vgArray[g] = v;
 
     }
-    
+
     private static VectorResult encode(int[][] s, int g, int q, int j) {
-    	
-    	int[] v = new int[q-1];
-    	int start = q*g;
-        int num = 0 ;
-    	
-    	for (int i = 0; i < q-1; i++) {
-    	
-    		int val = 0;
-    		if (start+i+1 < s[0].length) {
-    			val = s[start+i][j]-s[start+i+1][j];
-    		}
-    		
-    		if (val > 0) {
-                // TODO figure out what we hsould do here
-    			//System.out.println("ERROR negative value in v");
-    		}
-    		
-    		v[q-2-i] = val;
-            if (val == 1){
-                num += 1 <<  ( q-2-i);
+
+        int[] v = new int[q - 1];
+        int start = q * g;
+        int num = 0;
+
+        for (int i = 0; i < q - 1; i++) {
+
+            int val = 0;
+            if (start + i + 1 < s[0].length) {
+                val = s[start + i][j] - s[start + i + 1][j];
             }
 
-    	}
-    	return new VectorResult(num,v);
+            if (val > 0) {
+                // TODO figure out what we hsould do here
+                //System.out.println("ERROR negative value in v");
+            }
+
+            v[q - 2 - i] = val;
+            if (val == 1) {
+                num += 1 << (q - 2 - i);
+            }
+
+        }
+        return new VectorResult(num, v);
     }
 
     private static int getKFromRTable(int i, int g, int v) {
@@ -154,7 +151,7 @@ public class FourRussian extends AbstractAlg {
 
 
     private static void setKFromRTable(int i, int g, int vg, int k) {
-      rTable[i][g][vg] = k;
+        rTable[i][g][vg] = k;
     }
 
     private static VectorResult getLittleVG(int g) {
@@ -162,9 +159,8 @@ public class FourRussian extends AbstractAlg {
     }
 
 
-
-    private static void initRTable(int seqLength, int q){
-        rTable = new int[seqLength][seqLength/q +1][(int) Math.pow(2,q-1)];
+    private static void initRTable(int seqLength, int q) {
+        rTable = new int[seqLength][seqLength / q + 1][(int) Math.pow(2, q - 1)];
     }
 
 

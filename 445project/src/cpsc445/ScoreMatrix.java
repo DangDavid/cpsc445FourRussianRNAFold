@@ -8,13 +8,12 @@ package cpsc445;
  */
 public class ScoreMatrix {
 
-    Sequence sequence;         // Top as in top of the matrix
-    int[][] scoreMatrix;
-
+    final Sequence sequence;         // Top as in top of the matrix
+    final int[][] scoreMatrix;
 
 
     public ScoreMatrix(Sequence sequence) {
-        this.sequence= sequence;
+        this.sequence = sequence;
         int topLength = sequence.getSize();
 
         scoreMatrix = new int[topLength][topLength];

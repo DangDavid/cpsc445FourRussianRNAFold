@@ -7,11 +7,11 @@ package cpsc445;
  * Time: 7:26 PM
  */
 public class Sequence {
-    String name;
+    final String name;
     String sequence;
 
 
-    public Sequence(String name, String seq){
+    public Sequence(String name, String seq) {
         this.name = name;
         sequence = seq;
     }
@@ -34,6 +34,6 @@ public class Sequence {
     }
 
     public String get(int currIndex) {
-       return String.valueOf(sequence.charAt(currIndex)) ;
+        return String.valueOf(sequence.charAt(currIndex));
     }
 }

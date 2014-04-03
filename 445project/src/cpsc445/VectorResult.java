@@ -9,8 +9,8 @@ package cpsc445;
 public class VectorResult {
 
 
-    int[] v;
-    int num;
+    final int[] v;
+    final int num;
 
     public int[] getV() {
         return v;
