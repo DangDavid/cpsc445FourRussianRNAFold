@@ -43,7 +43,7 @@ public class FourRussian extends AbstractAlg {
                         }
 
                         // TODO TRUE case is done might be missing the left cells within the cube
-
+                        // David
 
                     } else {
 
@@ -66,9 +66,9 @@ public class FourRussian extends AbstractAlg {
             if ((j + 2) % q == 0) {
                 for (VectorResult bv : binaryV) {
                     int[] vPrime = decodeBinaryV(bv.getV());
-                    for (int i = 0; i < j - 1; i++) {
+                    for (int i = 0; i < j - 2; i++) {
                         // This should be g from column group
-                        fillRTable(i, ((j + 2) / q) - 1, vPrime, bv.getNum());
+                        fillRTable(i, ((j + 2) / q) - 1, vPrime, bv.getNum(), q, score);
                     }
                 }
 
@@ -78,17 +78,35 @@ public class FourRussian extends AbstractAlg {
 
     }
 
-    private static void fillRTable(int i, int g, int[] vPrime, int vNum) {
-        // Set the indices of the r table to the index of the max k
-        // TODO Sophia last 3 lines
+    private static void fillRTable(int i, int g, int[] vPrime, int vNum, int q, int[][] score) {
 
-        int k = 1;
+        int k = -1;
+        int maxValue = -1;
+        int x = q*(g+1) -2;
+        for (int index = 0; index < q; index++) {
+        	// Iterate through k
+        	
+        	int tempValue =-1;
+        	if ( g== 0 && index == q-1) {
+        		 tempValue = 0 + vPrime[index];
+        	}else {
+        		 tempValue = score[i][x-index] + vPrime[index];
+        	}
+   
+			if (tempValue > maxValue) {
+        		
+        		k = index;
+        		maxValue = tempValue;
+        	}
+        }
+        
         setKFromRTable(i, g, vNum, k);
 
 
     }
 
     private static int[] decodeBinaryV(int[] bv) {
+
     	
     	int z = bv.length;
     	int[] vPrime = new int[z+1];
@@ -101,6 +119,7 @@ public class FourRussian extends AbstractAlg {
     		vPrime[k] = sum;
     	}
         return vPrime;
+
     }
 
     private static void genBinaryVectors(int q) {
