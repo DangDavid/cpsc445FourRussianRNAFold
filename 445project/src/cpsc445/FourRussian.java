@@ -89,8 +89,18 @@ public class FourRussian extends AbstractAlg {
     }
 
     private static int[] decodeBinaryV(int[] bv) {
-        //TODO  sohpia looking into z
-        return new int[0];
+    	
+    	int z = bv.length;
+    	int[] vPrime = new int[z+1];
+    	
+    	for (int k = 0; k < z+1; k++) {
+    		int sum = 0;
+    		for (int p = 0; p < z-k; p++) {
+    			sum += bv[p];
+    		}
+    		vPrime[k] = sum;
+    	}
+        return vPrime;
     }
 
     private static void genBinaryVectors(int q) {
