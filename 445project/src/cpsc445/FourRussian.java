@@ -43,7 +43,7 @@ public class FourRussian extends AbstractAlg {
                         }
 
                         // TODO TRUE case is done might be missing the left cells within the cube
-
+                        // David
 
                     } else {
 
