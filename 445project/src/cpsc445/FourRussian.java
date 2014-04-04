@@ -35,23 +35,47 @@ public class FourRussian extends AbstractAlg {
 
             for (int i = j - 1; i >= 0; i--) {
 
-                for (int g = (j - 1) / q; g >= (i + 1) / q; g--) {
+                for (int g = (j - 1) / q; g >= (i ) / q; g--) {
 
+                	if (i == 7 && j == 8 ){
+                		//System.out.println(0);
+                	}
                     if (i >= g * q) {
                         for (int k = i + 1; k < (g + 1) * q && k < j; k++) {
                             score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
                         }
 
-                        // TODO TRUE case is done might be missing the left cells within the cube
+                        // TRUE case is done might be missing the left cells within the cube
                         // David
+                        int cGroup = ((j + 2) / q) - 1;
+                       
+                        if (cGroup==0) {
+                        	  for (int k = j-1; k >0 &&k >= i; k--) {
+                                  score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
+                              }
+
+                        } else  {
+                        	  for (int k = j-1; k > (((j+1)/ q)*q)-1 && k>0 &&k >= i ; k--) {
+                                  score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
+                              }
+
+                        }
 
                     } else {
 
                         VectorResult vg = getLittleVG(g);
                         int k = getKFromRTable(i, g, vg.getNum());
                         // TODO uncomment when k is non 0
-                        // score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
-
+                        int x = q*(g+1) -2;
+                        int y = q*(g+1) -1;
+                        if (y >= score.length) {
+                        	y = score.length-1;
+                        }
+                        if (x >= score.length) {
+                        	x = score.length-1;
+                        }
+                         score[i][j] = Math.max(score[i][j], score[i][x-k] + score[y-k][j]);
+                       
                     }
 
 
@@ -66,14 +90,20 @@ public class FourRussian extends AbstractAlg {
             if ((j + 2) % q == 0) {
                 for (VectorResult bv : binaryV) {
                     int[] vPrime = decodeBinaryV(bv.getV());
-                    for (int i = 0; i < j - 2; i++) {
+                    for (int i = 0; i < j - 1; i++) {
                         // This should be g from column group
+                    	
+                    	if (((j + 2) / q) - 1 == 3 && bv.getNum()==1) {
+                    		//System.out.println();
+                    	}
                         fillRTable(i, ((j + 2) / q) - 1, vPrime, bv.getNum(), q, score);
                     }
                 }
 
             }
         }
+        
+        //printScore(score);
         return result;
 
     }
@@ -93,8 +123,9 @@ public class FourRussian extends AbstractAlg {
         		 tempValue = score[i][x-index] + vPrime[index];
         	}
    
-			if (tempValue > maxValue) {
         		
+			if (tempValue >= maxValue) {
+        	
         		k = index;
         		maxValue = tempValue;
         	}
@@ -116,7 +147,7 @@ public class FourRussian extends AbstractAlg {
     		for (int p = 0; p < z-k; p++) {
     			sum += bv[p];
     		}
-    		vPrime[k] = sum;
+    		vPrime[z-k] = sum;
     	}
         return vPrime;
 
