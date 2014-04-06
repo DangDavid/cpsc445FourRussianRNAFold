@@ -16,24 +16,24 @@ public class Main {
         //FastaParser fp = new FastaParser();
         //List<Sequence> result = fp.parse("p04403.fasta");
 
-        Sequence test = new Sequence("test",testString+testString+testString+testString+testString+testString);
+        Sequence test = new Sequence("test",testString);
 
         long start = 0;
 
         start = System.nanoTime();
-        //ScoreMatrix n = Nussinov.runNussinov(test);
+        ScoreMatrix n = Nussinov.runNussinov(test);
         System.out.println(System.nanoTime() - start);
 
 
         start = System.nanoTime();
-       ScoreMatrix a = AlternateNussinov.runAlternate(test);
+        ScoreMatrix a = AlternateNussinov.runAlternate(test);
         System.out.println(System.nanoTime() - start);
         start = System.nanoTime();
         ScoreMatrix r = FourRussian.runFourRussian(test, (int) (Math.log(test.getSize()) / Math.log(3)));
         System.out.println(System.nanoTime() - start);
 
 
-        System.out.println(compareScores(a.scoreMatrix, r.scoreMatrix)); 
+        //System.out.println(compareScores(a.scoreMatrix, r.scoreMatrix));
         System.out.println("Nussinov finished ");
 
 

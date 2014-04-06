@@ -37,9 +37,6 @@ public class FourRussian extends AbstractAlg {
 
                 for (int g = (j - 1) / q; g >= (i ) / q; g--) {
 
-                	if (i == 7 && j == 8 ){
-                		//System.out.println(0);
-                	}
                     if (i >= g * q) {
                         for (int k = i + 1; k < (g + 1) * q && k < j; k++) {
                             score[i][j] = Math.max(score[i][j], score[i][k - 1] + score[k][j]);
@@ -65,7 +62,6 @@ public class FourRussian extends AbstractAlg {
 
                         VectorResult vg = getLittleVG(g);
                         int k = getKFromRTable(i, g, vg.getNum());
-                        // TODO uncomment when k is non 0
                         int x = q*(g+1) -2;
                         int y = q*(g+1) -1;
                         if (y >= score.length) {
@@ -92,10 +88,6 @@ public class FourRussian extends AbstractAlg {
                     int[] vPrime = decodeBinaryV(bv.getV());
                     for (int i = 0; i < j - 1; i++) {
                         // This should be g from column group
-                    	
-                    	if (((j + 2) / q) - 1 == 3 && bv.getNum()==1) {
-                    		//System.out.println();
-                    	}
                         fillRTable(i, ((j + 2) / q) - 1, vPrime, bv.getNum(), q, score);
                     }
                 }
@@ -189,11 +181,6 @@ public class FourRussian extends AbstractAlg {
             int val = 0;
             if (start + i + 1 < s[0].length) {
                 val = s[start + i][j] - s[start + i + 1][j];
-            }
-
-            if (val > 0) {
-                // TODO figure out what we hsould do here
-                //System.out.println("ERROR negative value in v");
             }
 
             v[q - 2 - i] = val;
