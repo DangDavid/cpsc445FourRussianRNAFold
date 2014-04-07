@@ -7,8 +7,8 @@ package cpsc445;
  * Time: 7:26 PM
  */
 public class Sequence {
-    final String name;
-    String sequence;
+    private final String name;
+    private String sequence;
 
 
     public Sequence(String name, String seq) {

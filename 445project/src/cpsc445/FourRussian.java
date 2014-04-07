@@ -10,8 +10,8 @@ import java.util.*;
  */
 public class FourRussian extends AbstractAlg {
 
-    final static List<VectorResult> binaryV = new ArrayList<VectorResult>();
-    static VectorResult[] vgArray;
+    private final static List<VectorResult> binaryV = new ArrayList<VectorResult>();
+    private static VectorResult[] vgArray;
     private static int[][][] rTable;
 
     public static ScoreMatrix runFourRussian(Sequence sequence, int q) {
@@ -108,9 +108,9 @@ public class FourRussian extends AbstractAlg {
         for (int index = 0; index < q; index++) {
         	// Iterate through k
         	
-        	int tempValue =-1;
+        	int tempValue;
         	if ( g== 0 && index == q-1) {
-        		 tempValue = 0 + vPrime[index];
+        		 tempValue = vPrime[index];
         	}else {
         		 tempValue = score[i][x-index] + vPrime[index];
         	}

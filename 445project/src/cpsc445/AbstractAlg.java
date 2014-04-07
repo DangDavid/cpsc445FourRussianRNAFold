@@ -9,8 +9,8 @@ import java.util.HashMap;
  * Time: 12:57 AM
  */
 public class AbstractAlg {
-    public static final int NOT_FOUND_MATCH = 0;
-    protected static final HashMap<String, Integer> SCORE_TABLE;
+    private static final int NOT_FOUND_MATCH = 0;
+    private static final HashMap<String, Integer> SCORE_TABLE;
 
     static {
         SCORE_TABLE = new HashMap<String, Integer>();

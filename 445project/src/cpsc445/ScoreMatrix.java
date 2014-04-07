@@ -8,8 +8,8 @@ package cpsc445;
  */
 public class ScoreMatrix {
 
-    final Sequence sequence;         // Top as in top of the matrix
-    final int[][] scoreMatrix;
+    private final Sequence sequence;         // Top as in top of the matrix
+    private final int[][] scoreMatrix;
 
 
     public ScoreMatrix(Sequence sequence) {
